@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
+
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #007bff;
+            text-align: center;
+        }
+
+        .container {
+            position: relative;
+        }
+
+        .logout-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        .post-container {
+            float: left;
+            width: 70%;
+            background-color: #ffffff;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .post-form {
+            float: left;
+            width: 70%;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .sorting-links {
+            float: left;
+            width: 70%;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .search-users-section {
+            float: left;
+            width: 70%;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .post-content {
+            font-size: 18px;
+        }
+
+        .author-info {
+            font-style: italic;
+            color: #6c757d;
+        }
+
+        .likes-section {
+            margin-top: 10px;
+        }
+
+        .like-button {
+            margin-right: 10px;
+        }
+
+        .comment-section {
+            margin-top: 10px;
+        }
+
+        .comment-input {
+            margin-top: 5px;
+            margin-bottom: 10px;
+            margin-right: 400px;
+        }
+
+        .comment-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .comment-item {
+            margin-bottom: 5px;
+        }
+
+        .friends-section {
+            float: right;
+            width: 30%;
+            transform: translateY(50%);
+            background-color: #ffffff;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+        }
+
+        .friends-list-container {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .friends-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .friends-list li {
+            margin-bottom: 5px;
+        }
+    </style>
+    <title>Home</title>
+</head>
+<body>
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+            <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endif %}
+{% endwith %}
+<div class="container">
+    <h1>Welcome to Vimal Blog</h1>
+
+    <!-- If the user is logged in, show the friends section -->
+    {% if session['user_id'] %}
+        <div class="friends-section mt-4">
+            <h2>Your Friends</h2>
+            <p>You have {{ friends|length }} friends</p>
+
+            <div class="friends-list-container">
+                <ul class="friends-list">
+                    {% for friend in friends %}
+                        <li>{{ friend.username }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- If the user is logged in, show the create post section -->
+    {% if session['user_id'] %}
+        <div class="post-form">
+            <p>Hello, <strong>{{ username }}</strong>!</p>
+            <form action="{{ url_for('create_post') }}" method="post" class="mb-3">
+                <div class="mb-3">
+                    <label for="post_content" class="form-label">Create a new post:</label>
+                    <input type="text" id="post_content" name="post_content" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Post</button>
+            </form>
+        </div>
+        <form action="{{ url_for('logout') }}" method="get" class="logout-button">
+            <button type="submit" class="btn btn-danger">Logout</button>
+        </form>
+    {% else %}
+        <p class="mb-3">Please log in to create posts and interact with the community.</p>
+    {% endif %}
+
+    <!-- If the user is logged in, show the search users section -->
+    <div class="search-users-section">
+        <form action="{{ url_for('search_users') }}" method="post" class="mb-3">
+            <div class="mb-3">
+                <label for="search_username" class="form-label">Search for users:</label>
+                <input type="text" id="search_username" name="search_username" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+    </div>
+
+    <!-- If the user is logged in, show the posts section -->
+    <div class="sorting-links">
+        <a href="{{ url_for('home', sort_by='date') }}" class="btn btn-secondary">Sort by Date</a>
+        <a href="{{ url_for('home', sort_by='likes_desc') }}" class="btn btn-secondary">Sort by Likes (Desc)</a>
+        <a href="{{ url_for('home', sort_by='likes_asc') }}" class="btn btn-secondary">Sort by Likes (Asc)</a>
+    </div>
+    {% for post in posts %}
+        <div class="post-container">
+            <p class="post-content">{{ post.content }}</p>
+            <p class="author-info">Author: {{ post.author.username }}</p>
+            <div class="likes-section">
+                <span class="badge bg-secondary">Likes: {{ post.likes|length }}</span>
+                {% if session['user_id'] %}
+                    {% if post|user_has_liked(session['user_id']) %}
+                        <form action="{{ url_for('add_like', post_id=post.id) }}" method="post" class="like-button">
+                            <input type="hidden" name="post_id" value="{{ post.id }}">
+                            <button type="submit" class="btn btn-danger">Unlike</button>
+                        </form>
+                    {% else %}
+                        <form action="{{ url_for('add_like', post_id=post.id) }}" method="post" class="like-button">
+                            <input type="hidden" name="post_id" value="{{ post.id }}">
+                            <button type="submit" class="btn btn-success">Like</button>
+                        </form>
+                    {% endif %}
+                {% endif %}
+            </div>
+            <div class="comment-section">
+                <form action="{{ url_for('add_comment', post_id=post.id) }}" method="post" class="comment-input">
+                    <input type="text" name="content" class="form-control" placeholder="Add a comment">
+                    <button type="submit" class="btn btn-primary mt-2">Comment</button>
+                </form>
+                <ul class="comment-list">
+                    {% for comment in post.comments %}
+                        <li class="comment-item">{{ comment.content }} - {{ comment.get_username() }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+</body>
+</html>
