@@ -1,13 +1,13 @@
 import psycopg2
 
-# PostgreSQL Docker container information
-host = 'db'  # Replace with 'localhost' if not using Docker
+# Informationen zum PostgreSQL-Docker-Container
+host = 'db'  # Ersetzen Sie durch 'localhost', wenn Sie nicht Docker verwenden.
 port = 5432
 user = 'test'
 password = 'test'
-database = 'pa_vcid_db'  # Replace with your desired database name
+database = 'pa_vcid_db'  # Ersetzen Sie durch den gewünschten Datenbanknamen
 
-# Connect to PostgreSQL
+# Verbindung zu PostgreSQL
 connection = psycopg2.connect(
     host=host,
     port=port,
@@ -17,10 +17,10 @@ connection = psycopg2.connect(
 )
 connection.autocommit = True
 
-# Create a cursor object to interact with the database
+# Erstellen eines Cursor-Objekts zur Interaktion mit der Datenbank
 cursor = connection.cursor()
 
-# Create the database
+# Erstellen Sie die Datenbank
 cursor.execute(f"COMMIT;")
 try:
     cursor.execute(f"CREATE DATABASE {database};")
@@ -28,11 +28,11 @@ try:
 except psycopg2.errors.DuplicateDatabase:
     print(f"Database '{database}' already exists. Continuing...")
 
-# Close the cursor and connection
+# Schliessen des Cursors und der Verbindung
 cursor.close()
 connection.close()
 
-# Connect to the new database
+# Verbindung zur neuen Datenbank herstellen
 connection = psycopg2.connect(
     host=host,
     port=port,
@@ -42,10 +42,10 @@ connection = psycopg2.connect(
 )
 connection.autocommit = True
 
-# Create a cursor object to interact with the database
+# Erstellen eines Cursor-Objekts zur Interaktion mit der Datenbank
 cursor = connection.cursor()
 
-# Delete all tables if they exist
+# Alle Tabellen loeschen, wenn sie existieren
 cursor.execute("""
     DROP TABLE IF EXISTS "user" CASCADE;
     DROP TABLE IF EXISTS "post" CASCADE;
@@ -54,7 +54,7 @@ cursor.execute("""
     DROP TABLE IF EXISTS "friendship" CASCADE;
 """)
 
-# Create User table
+# Benutzertabelle erstellen
 cursor.execute("""
     CREATE TABLE IF NOT EXISTS "user" (
         id SERIAL PRIMARY KEY,
@@ -64,7 +64,7 @@ cursor.execute("""
     );
 """)
 
-# Create Post table
+# Post-Tabelle erstellen
 cursor.execute("""
     CREATE TABLE IF NOT EXISTS "post" (
         id SERIAL PRIMARY KEY,
@@ -73,7 +73,7 @@ cursor.execute("""
     );
 """)
 
-# Create Comment table
+# Tabelle Kommentar erstellen
 cursor.execute("""
     CREATE TABLE IF NOT EXISTS "comment" (
         id SERIAL PRIMARY KEY,
@@ -83,7 +83,7 @@ cursor.execute("""
     );
 """)
 
-# Create Like table
+# Like-Tabelle erstellen
 cursor.execute("""
     CREATE TABLE IF NOT EXISTS "like" (
         id SERIAL PRIMARY KEY,
@@ -92,7 +92,7 @@ cursor.execute("""
     );
 """)
 
-# Create Friendship table
+# Freundschaftstabelle erstellen
 cursor.execute("""
     CREATE TABLE IF NOT EXISTS "friendship" (
         id SERIAL PRIMARY KEY,
@@ -101,7 +101,7 @@ cursor.execute("""
     );
 """)
 
-# Create 10 users
+# 10 Benutzer anlegen, Testbenutzer
 cursor.execute("""
     INSERT INTO "user" (username, email, password) VALUES
         ('john', 'test@mail.com', '$2b$12$AtulTqJa7NCO3HYH9qS4iebUTveVLVk1a/YbZpyXx6mfYnlYt9opW'),
@@ -112,7 +112,7 @@ cursor.execute("""
         """)
 
 
-# Create some friendships
+# Freundschaften schliessen
 cursor.execute("""
     INSERT INTO "friendship" (user_id, friend_id) VALUES
         (1, 3),
@@ -124,7 +124,7 @@ cursor.execute("""
         (4, 5)
         """)
 
-# Create some posts
+# Einige Beitraege erstellen
 cursor.execute("""
     INSERT INTO "post" (content, user_id) VALUES
         ('Hello World!', 1),
@@ -132,7 +132,7 @@ cursor.execute("""
         ('This is another test post.', 3)
         """)
 
-# Create some likes
+# Einige Likes erzeugen
 cursor.execute("""
     INSERT INTO "like" (user_id, post_id) VALUES
         (1, 1),
@@ -146,7 +146,7 @@ cursor.execute("""
         (4, 3)
         """)
 
-# Create some comments
+# Erstellen Sie einige Kommentare
 cursor.execute("""
     INSERT INTO "comment" (content, user_id, post_id) VALUES
         ('Hello Stranger!', 1, 1),
@@ -157,6 +157,6 @@ cursor.execute("""
         """)
 
 print("Database tables have been created.")
-# Close the cursor and connection
+# Schliessen des Cursors und der Verbindung
 cursor.close()
 connection.close()
