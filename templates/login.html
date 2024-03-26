@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+# Hier werden Bootstraps und CDN eingebunden (Bootstraps - Beginn Sie mit Bootstraps, o.S.)
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,7 +19,7 @@
             integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
             crossorigin="anonymous"></script>
 
-    <title>Login</title>
+    <title>Startseite</title>
 </head>
 <body>
 {% with messages = get_flashed_messages() %}
@@ -32,7 +33,7 @@
     {% endif %}
 {% endwith %}
 <div class="container mt-3">
-    <h1>Startseite | Willkommen auf unserem Menzi Muck Service Portal</h1>
+    <h1>Willkommen auf unserem Menzi Muck Service Portal</h1>
     {% with messages = get_flashed_messages() %}
         {% if messages %}
             <ul>
@@ -45,15 +46,16 @@
         {% endif %}
     {% endwith %}
 
+# Eingabe Benutzerdaten
     <form action="{{ url_for('login') }}" method="post">
-        <label for="username">Username:</label>
+        <label for="username">Benutername:</label>
         <input type="text" id="username" name="username" required>
-        <label for="password">Password:</label>
+        <label for="password">Passwort:</label>
         <input type="password" id="password" name="password" required>
-        <button type="submit">Login</button>
+        <button type="submit">Anmelden</button>
     </form>
-
-    <p>Not registered yet? <a href="{{ url_for('register') }}">Register here</a>.</p>
+# Hier wird Registierung fortgesetzt.
+    <p>Noch nicht registriert? <a href="{{ url_for('register') }}">Registierung</a>.</p>
 </div>
 </body>
 </html>
