@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+<!-- Hier werden Bootstraps und CDN eingebunden (Bootstraps - Beginn Sie mit Bootstraps, o.S.) --> 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,12 +15,12 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
             integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
             crossorigin="anonymous"></script>
-    <title>User Search Results</title>
+    <title>Benutzer Suchergebnisse</title>
 </head>
 <body>
 <div class="container">
-    <h1>User Search Results</h1>
-
+    <h1>Benutzer Suchergebnisse</h1>
+<!-- Hier werden als Freunde oder Partner hinzugefuegt. --> 
     {% if users %}
         <ul>
             {% for user in users %}
@@ -28,7 +29,7 @@
                     {% if user.id != session['user_id'] %}
                         <form action="{{ url_for('add_friend', friend_id=user.id) }}" method="post"
                               class="add-friend-button">
-                            <button type="submit" class="btn btn-primary">Add as Friend</button>
+                            <button type="submit" class="btn btn-primary">Als Freunde oder Partner hinzufuegen</button>
                         </form>
                     {% endif %}
                 </li>

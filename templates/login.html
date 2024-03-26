@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-# Hier werden Bootstraps und CDN eingebunden (Bootstraps - Beginn Sie mit Bootstraps, o.S.)
+<!-- Hier werden Bootstraps und CDN eingebunden (Bootstraps - Beginn Sie mit Bootstraps, o.S.) --> 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -45,8 +45,7 @@
             </ul>
         {% endif %}
     {% endwith %}
-
-# Eingabe Benutzerdaten
+<!-- Eingabe Benutzerdaten -->
     <form action="{{ url_for('login') }}" method="post">
         <label for="username">Benutername:</label>
         <input type="text" id="username" name="username" required>
@@ -54,7 +53,7 @@
         <input type="password" id="password" name="password" required>
         <button type="submit">Anmelden</button>
     </form>
-# Hier wird Registierung fortgesetzt.
+<!-- Hier werden die Registierung fortgesetzt -->
     <p>Noch nicht registriert? <a href="{{ url_for('register') }}">Registierung</a>.</p>
 </div>
 </body>

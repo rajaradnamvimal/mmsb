@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+<!-- Hier werden Bootstraps und CDN eingebunden (Bootstraps - Beginn Sie mit Bootstraps, o.S.) --> 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -44,7 +45,7 @@
             </ul>
         {% endif %}
     {% endwith %}
-
+<!-- Hier werden Eingaben fuer Registierung gemacht. --> 
     <form action="{{ url_for('register') }}" method="post">
         <label for="username">Benutzername:</label>
         <input type="text" id="username" name="username" required>
