@@ -169,10 +169,10 @@
     <!-- Wenn der Benutzer eingeloggt ist, wird der Abschnitt "Beitrag erstellen" angezeigt. -->
     {% if session['user_id'] %}
         <div class="post-form">
-            <p>Hello, <strong>{{ username }}</strong>!</p>
+            <p>Hallo, <strong>{{ username }}</strong>!</p>
             <form action="{{ url_for('create_post') }}" method="post" class="mb-3">
                 <div class="mb-3">
-                    <label for="post_content" class="form-label">Create a new post:</label>
+                    <label for="post_content" class="form-label">Einen neuen Beitrag erstellen:</label>
                     <input type="text" id="post_content" name="post_content" class="form-control" required>
                 </div>
                 <button type="submit" class="btn btn-primary">Post</button>
@@ -189,10 +189,10 @@
     <div class="search-users-section">
         <form action="{{ url_for('search_users') }}" method="post" class="mb-3">
             <div class="mb-3">
-                <label for="search_username" class="form-label">Search for users:</label>
+                <label for="search_username" class="form-label">Suche nach Benutzern:</label>
                 <input type="text" id="search_username" name="search_username" class="form-control" required>
             </div>
-            <button type="submit" class="btn btn-primary">Search</button>
+            <button type="submit" class="btn btn-primary">Suchen</button>
         </form>
     </div>
 
