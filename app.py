@@ -5,7 +5,7 @@ from sqlalchemy.exc import IntegrityError
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from sqlalchemy import desc, asc
-
+# Hier werden die Datenbank Uebertragung definiert.
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://test:test@db:5432/pa_vcid_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -82,7 +82,7 @@ class Friendship(db.Model):
 
 @app.before_request
 def before_request():
-    # Check if the user is logged in
+    # Pruefen, ob der Benutzer angemeldet ist.
     if request.endpoint == 'register':
         return
     elif "application/json" in request.headers.get('Accept'):
@@ -100,16 +100,16 @@ def before_request():
 
 @app.route('/')
 def home():
-    # Retrieve sorting parameter from the query string
-    sort_by = request.args.get('sort_by', 'date')  # Default to sorting by date
+    # Sortierparameter aus dem Query-String abrufen
+    sort_by = request.args.get('sort_by', 'date')  # Standardmaessig wird nach Datum sortiert
 
-    # Get posts based on the sorting parameter
+    # Abrufen von Beitraegen anhand des Sortierparameters
     if sort_by == 'likes_desc':
         posts = Post.query.outerjoin(Like).group_by(Post.id).order_by(desc(db.func.count(Like.id)))
     elif sort_by == 'likes_asc':
         posts = Post.query.outerjoin(Like).group_by(Post.id).order_by(asc(db.func.count(Like.id)))
     else:
-        # Default sorting by date
+        # Standardsortierung nach Datum
         posts = Post.query.order_by(Post.id.desc()).all()
 
     user = get_user(request)
@@ -132,10 +132,10 @@ def home():
             flash('User not found.', 'danger')
             return render_template('home.html', posts=posts)
 
-
+# Beitraege erstellen.
 @app.route('/create_post', methods=['POST'])
 def create_post():
-    # if 'user_id' in session:
+    # if 'user_id' in Sitzung:
     user = get_user(request)
 
     if user:
@@ -149,14 +149,14 @@ def create_post():
     else:
         flash('User not found.', 'danger')
     # else:
-    #     flash('Please log in to create a post.', 'danger')
+    #     flash('Bitte melden Sie sich an, um einen Beitrag zu erstellen.', 'danger')
 
     return redirect(url_for('home'))
 
-
+# Like geben.
 @app.route('/add_like/<int:post_id>', methods=['POST'])
 def add_like(post_id):
-    # if 'user_id' in session:
+    # if 'user_id' in Sitzung:
     user = get_user(request)
     post = Post.query.get(post_id)
 
@@ -167,39 +167,38 @@ def add_like(post_id):
             existing_like = Like.query.filter_by(user_id=user.id, post_id=post_id).first()
 
             if existing_like:
-                # Unlike: User has already liked the post, so remove the like
+                # Unlike: Benutzer hat den Beitrag bereits geliked, also entfernen Sie das Like
                 db.session.delete(existing_like)
                 flash('Like removed!', 'success')
                 if "application/json" in request.headers.get('Accept'):
-                    # Return the number of likes for the post
+                    # Gibt die Anzahl der Likes fuer den Beitrag zurueck
                     db.session.commit()
                     return jsonify({'likes': len(post.likes)}), 200
             else:
-                # Like: User has not liked the post, so add the like
+                # Like: Benutzer hat den Beitrag nicht gemocht, also fuegen Sie das Like hinzu.
                 new_like = Like(user_id=user.id, post_id=post_id)
                 db.session.add(new_like)
                 flash('Like added!', 'success')
                 if "application/json" in request.headers.get('Accept'):
-                    # Return the number of likes for the post
+                    # Gibt die Anzahl der Likes fuer den Beitrag zurueck
                     db.session.commit()
                     return jsonify({'likes': len(post.likes)}), 200
 
             db.session.commit()
 
         except IntegrityError:
-            # This will catch an IntegrityError if a user tries to like the same post twice
+            # Dies fuehrt zu einem IntegrityError, wenn ein Benutzer versucht, denselben Beitrag zweimal zu moegen
             db.session.rollback()
             flash('You have already liked this post.', 'danger')
 
-    # else:
-    #     flash('Please log in to like or unlike a post.', 'danger')
+    # else: flash('Bitte loggen Sie sich ein, um einen Beitrag zu moegen oder nicht zu moegen.', 'danger')
 
     return redirect(url_for('home'))
 
-
+# Kommentieren hinzufuegen.
 @app.route('/add_comment/<int:post_id>', methods=['POST'])
 def add_comment(post_id):
-    # if 'user_id' in session:
+    # if 'user_id' in Sitzung:
     user = get_user(request)
 
     if user:
@@ -212,15 +211,14 @@ def add_comment(post_id):
             return jsonify({'content': comment_content, 'author': user.username}), 200
     else:
         flash('User not found.', 'danger')
-    # else:
-    #     flash('Please log in to comment on posts.', 'danger')
+    # else: flash('Bitte loggen Sie sich ein, um Beitraege zu kommentieren.', 'danger')
 
     return redirect(url_for('home'))
 
 
 @app.route('/search_users', methods=['POST'])
 def search_users():
-    # if 'user_id' in session:
+    # 'user_id' in Sitzung:
     search_username = request.form.get('search_username')
     users = User.query.filter(User.username.ilike(f'%{search_username}%')).all()
 
@@ -230,13 +228,13 @@ def search_users():
 
     return render_template('search_users.html', users=users, search_query=search_username)
 
-    # flash('Please log in to search for users.', 'danger')
-    # return redirect(url_for('home'))
+    # flash('Bitte melden Sie sich an, um nach Benutzern zu suchen.', 'danger')
+    # Rueckleitung(url_for('home'))
 
 
 @app.route('/add_friend/<int:friend_id>', methods=['POST'])
 def add_friend(friend_id):
-    # if 'user_id' in session:
+    # 'user_id' in Sitzung:
     user = get_user(request)
     user_id = user.id
 
@@ -255,7 +253,7 @@ def add_friend(friend_id):
 
     return redirect(url_for('home'))
 
-
+# Registierung Vorgang
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
@@ -281,7 +279,7 @@ def register():
 
     return render_template('register.html')
 
-
+# Login Vorgang
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -302,7 +300,7 @@ def login():
 
 @app.route('/logout')
 def logout():
-    # Implement logout functionality if needed
+    # Implementierung einer Abmeldefunktion, falls erforderlich
     session.pop('user_id', None)
     flash('You have been logged out.', 'success')
     return redirect(url_for('home'))
@@ -317,7 +315,7 @@ def get_user(req):
         user = User.query.filter_by(username=username).first()
     return user
 
-
+    # Externe URL 
 if __name__ == '__main__':
     with app.app_context():
         db.drop_all()

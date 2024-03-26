@@ -1,22 +1,22 @@
-# Use an official Python runtime as a parent image
+# Eine offizielle Python-Laufzeitumgebung als uebergeordnetes Bild verwenden
 FROM python:3.10-slim-buster
 RUN apt-get update -y
 RUN apt-get install -y python3-pip
 
 ENV PYTHONBUFFERED True
 
-# Set the working directory in the container to /app
+# Setzen Sie das Arbeitsverzeichnis im Container auf /app
 WORKDIR /app
 
-# Add the current directory contents into the container at /app
+# Hinzufuegen des Inhalts des aktuellen Verzeichnisses in den Container unter /app
 ADD . /app
 
-# Install any needed packages specified in requirements.txt
+# Installieren Sie alle benoetigten Pakete, die in requirements.txt angegeben sind.
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Make port 5000 available to the world outside this container
+# Port 5000 fuer die Welt ausserhalb dieses Containers verfuegbar machen
 EXPOSE 5000
 
-# Run app.py when the container launches
+# app.py beim Starten des Containers ausfuehren
 CMD ["python", "setup_db.py"]
 CMD ["python", "app.py"]
