@@ -2,7 +2,7 @@ import unittest
 import requests
 
 
-class TestSocialMediaApp(unittest.TestCase):
+class TestMMSPApp(unittest.TestCase):
     def setUp(self):
         self.api_url = "http://localhost:5000"
         self.headers = {'Accept': 'application/json'}
