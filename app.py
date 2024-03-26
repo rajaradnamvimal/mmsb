@@ -143,7 +143,7 @@ def create_post():
         new_post = Post(content=post_content, author=user)
         db.session.add(new_post)
         db.session.commit()
-        flash('Post created successfully!', 'success')
+        flash('Beitrag erfolgreich erstellt!', 'success')
         if "application/json" in request.headers.get('Accept'):
             return jsonify({'content': post_content, 'author': user.username}), 200
     else:
@@ -169,7 +169,7 @@ def add_like(post_id):
             if existing_like:
                 # Unlike: Benutzer hat den Beitrag bereits geliked, also entfernen Sie das Like
                 db.session.delete(existing_like)
-                flash('Like removed!', 'success')
+                flash('Like entfernt!', 'success')
                 if "application/json" in request.headers.get('Accept'):
                     # Gibt die Anzahl der Likes fuer den Beitrag zurueck
                     db.session.commit()
@@ -178,7 +178,7 @@ def add_like(post_id):
                 # Like: Benutzer hat den Beitrag nicht gemocht, also fuegen Sie das Like hinzu.
                 new_like = Like(user_id=user.id, post_id=post_id)
                 db.session.add(new_like)
-                flash('Like added!', 'success')
+                flash('Like hinzugefuegt.!', 'success')
                 if "application/json" in request.headers.get('Accept'):
                     # Gibt die Anzahl der Likes fuer den Beitrag zurueck
                     db.session.commit()
@@ -189,7 +189,7 @@ def add_like(post_id):
         except IntegrityError:
             # Dies fuehrt zu einem IntegrityError, wenn ein Benutzer versucht, denselben Beitrag zweimal zu moegen
             db.session.rollback()
-            flash('You have already liked this post.', 'danger')
+            flash('Sie haben diesen Beitrag bereits gemocht.', 'danger')
 
     # else: flash('Bitte loggen Sie sich ein, um einen Beitrag zu moegen oder nicht zu moegen.', 'danger')
 
@@ -206,11 +206,11 @@ def add_comment(post_id):
         new_comment = Comment(content=comment_content, user_id=user.id, post_id=post_id)
         db.session.add(new_comment)
         db.session.commit()
-        flash('Comment added!', 'success')
+        flash('Kommentar hinzugefuegt!', 'success')
         if "application/json" in request.headers.get('Accept'):
             return jsonify({'content': comment_content, 'author': user.username}), 200
     else:
-        flash('User not found.', 'danger')
+        flash('Benutzer nicht gefunden.', 'danger')
     # else: flash('Bitte loggen Sie sich ein, um Beitraege zu kommentieren.', 'danger')
 
     return redirect(url_for('home'))
@@ -239,15 +239,15 @@ def add_friend(friend_id):
     user_id = user.id
 
     if user_id == friend_id:
-        flash('You cannot add yourself as a friend.', 'danger')
+        flash('Sie koennen sich selbst nicht als Freund hinzufuegen.', 'danger')
     elif Friendship.query.filter_by(user_id=user_id, friend_id=friend_id).first() or Friendship.query.filter_by(
             user_id=friend_id, friend_id=user_id).first():
-        flash('You are already friends with this user.', 'info')
+        flash('Sie sind bereits mit diesem Benutzer befreundet.', 'info')
     else:
         new_friendship = Friendship(user_id=user_id, friend_id=friend_id)
         db.session.add(new_friendship)
         db.session.commit()
-        flash('Friend request sent!', 'success')
+        flash('Freundschaftsanfrage gesendet!', 'success')
         if "application/json" in request.headers.get('Accept'):
             return jsonify({'friend_id': friend_id}), 200
 
@@ -267,10 +267,10 @@ def register():
             db.session.add(new_user)
             db.session.commit()
         except IntegrityError:
-            flash('Username or email already exists. Please try again.', 'danger')
+            flash('Benutzername oder E-Mail existiert bereits. Bitte versuchen Sie es erneut.', 'danger')
             return render_template('register.html')
 
-        flash('Your account has been created!', 'success')
+        flash('Ihr Konto wurde erstellt!', 'success')
 
         if "application/json" in request.headers.get('Accept'):
             return jsonify({'username': username, 'email': email}), 200
@@ -288,12 +288,12 @@ def login():
         user = User.query.filter_by(username=username).first()
 
         if user and bcrypt.check_password_hash(user.password, password):
-            flash('Login successful!', 'success')
+            flash('Anmeldung erfolgreich!', 'success')
             session['user_id'] = user.id
             session['username'] = user.username
             return redirect(url_for('home'))
         else:
-            flash('Login unsuccessful. Please check your username and password.', 'danger')
+            flash('Login fehlgeschlagen. Bitte ueberpruefen Sie Ihren Benutzernamen und Ihr Passwort.', 'danger')
 
     return render_template('login.html')
 
@@ -302,7 +302,7 @@ def login():
 def logout():
     # Implementierung einer Abmeldefunktion, falls erforderlich
     session.pop('user_id', None)
-    flash('You have been logged out.', 'success')
+    flash('Sie wurden abgemeldet.', 'success')
     return redirect(url_for('home'))
 
 
